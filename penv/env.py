@@ -292,7 +292,7 @@ def create_env_with_price_series(config: dict, price_stream):
 
 
 def create_env(config: dict):
-    df = pd.read_hdf('binance_30_dataset.h5')
+    df = pd.read_hdf('data/binance_30_dataset.h5')
     coins = ['BTC', 'ETH', 'BNB', 'LTC']
     env = create_env_with_price_series(
         config=config,

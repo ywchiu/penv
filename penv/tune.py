@@ -37,7 +37,7 @@ def main(num_samples: int, num_workers: int):
             "env": "TradingEnv",
             "env_config":{
                 "total_steps": 1000,
-                "num_assets": 4,
+                "num_assets": 30,
                 "commission": 1e-3,
                 "time_cost": 0,
                 "window_size": tune.randint(5, 50),
@@ -51,7 +51,7 @@ def main(num_samples: int, num_workers: int):
             "model": {
                 "custom_model": "reallocate",
                 "custom_model_config": {
-                   "num_assets": 4
+                   "num_assets": 30
                 },
                 "custom_action_dist": "dirichlet",
             },
