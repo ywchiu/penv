@@ -18,7 +18,9 @@ from .price_generators import (
     MultiGBM,
     make_multi_gbm_price_curve,
     make_shifting_sine_price_curves,
-    MultiSinePriceCurves
+    MultiSinePriceCurves,
+    read_binance_datastream,
+    BinancePrice
 )
 
 plt.style.use("seaborn")
@@ -234,7 +236,7 @@ def index(i: int):
     return f
 
 
-def create_env_with_price_series(config: dict, price_stream: Stream[np.array]):
+def create_env_with_price_series(config: dict, price_stream):
 
     np.seterr(divide="ignore")
 
@@ -246,7 +248,11 @@ def create_env_with_price_series(config: dict, price_stream: Stream[np.array]):
     total_steps = config["total_steps"] + config["min_periods"]
     m = config["num_assets"]
 
-    p_streams = [price_stream.apply(index(i), dtype="float").rename(f"p{i}") for i in range(m)]
+    #p_streams = [
+    #    Stream.source( list(df[c]), dtype="float").rename(f"p{i}") for i, c in enumerate(coins)
+    #]
+    #[price_stream.apply(index(i), dtype="float").rename(f"p{i}") for i in range(m)]
+    p_streams =  price_stream
     lag_streams = [p_streams[i].lag().rename(f"l{i}") for i in range(m)]
 
     prices = Stream.group(lag_streams).apply(lambda x: np.array([x[f"l{i}"] for i in range(m)])).rename("prices")
@@ -286,14 +292,12 @@ def create_env_with_price_series(config: dict, price_stream: Stream[np.array]):
 
 
 def create_env(config: dict):
+    df = pd.read_hdf('binance_30_dataset.h5')
+    coins = ['BTC', 'ETH', 'BNB', 'LTC']
     env = create_env_with_price_series(
         config=config,
-        price_stream=MultiSinePriceCurves(
-            s0=np.array([50, 48, 45, 60]),
-            shift=np.array([0, np.pi / 2, np.pi, 3*np.pi / 2]),
-            freq=np.array([1, 5, 3, 2]),
-            n=config["total_steps"],
-            warmup=config["min_periods"]
-        )
+        price_stream = [
+            Stream.source( list(df[c]), dtype="float").rename(f"p{i}") for i, c in enumerate(coins)
+        ] 
     )
     return env

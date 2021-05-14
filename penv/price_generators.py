@@ -114,6 +114,31 @@ def make_shifting_sine_price_curves(n: int, warmup: int = 0):
 
     return prices
 
+def read_binance_datastream():
+    prices = pd.read_hdf('binance_30_dataset.h5')
+    s = Stream.Source(prices['BTC'].values)
+    return s
+
+class BinancePrice(Stream[np.array]):
+
+    def __init__(self, coin: str, n: int):
+        super().__init__()
+        prices = pd.read_hdf('binance_30_dataset.h5')
+        self.coin = coin
+        print(prices.head())
+        print(prices)
+        print(prices[self.coin])
+        self.x =  prices[self.coin]
+
+    def forward(self) -> np.array:
+        self.i += 1
+
+    def has_next(self):
+        return self.i < self.steps
+
+    def reset(self):
+        super().reset()
+        self.i = 0
 
 class MultiSinePriceCurves(Stream[np.array]):
 
