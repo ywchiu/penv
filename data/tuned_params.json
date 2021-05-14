@@ -3,7 +3,7 @@
         "env": "TradingEnv",
         "env_config": {
             "total_steps": 1000,
-            "num_assets": 4,
+            "num_assets": 6,
             "commission": 0.001,
             "time_cost": 0,
             "window_size": 9,
@@ -17,7 +17,7 @@
         "model": {
             "custom_model": "reallocate",
             "custom_model_config": {
-                "num_assets": 4
+                "num_assets": 6
             },
             "custom_action_dist": "dirichlet"
         },

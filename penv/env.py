@@ -68,7 +68,14 @@ class Observer(generic.Observer):
     def observation_space(self) -> Space:
         obs = self.feed.next()["obs"]
         self.keys = [k for k in obs]
+        print('==========================')
+        print('self.keys',self.keys)
+        print('==========================')
+        # box assets * features = 6 * 3 = 18
         space = Box(-np.inf, np.inf, shape=(self.window_size, len(self.keys)), dtype=np.float64)
+        print('==========================')
+        print('space',space)
+        print('==========================')
         self.feed.reset()
         return space
 
@@ -88,7 +95,7 @@ class Observer(generic.Observer):
 
         obs = data["obs"]
         self.history += [[obs[k] for k in self.keys]]
-
+        
         return np.array(self.history)
 
     def reset(self) -> None:
@@ -247,7 +254,7 @@ def create_env_with_price_series(config: dict, price_stream):
 
     total_steps = config["total_steps"] + config["min_periods"]
     m = config["num_assets"]
-
+    print('num_assets',m)
     #p_streams = [
     #    Stream.source( list(df[c]), dtype="float").rename(f"p{i}") for i, c in enumerate(coins)
     #]
@@ -293,10 +300,10 @@ def create_env_with_price_series(config: dict, price_stream):
 
 def create_env(config: dict):
     df = pd.read_hdf('data/binance_30_dataset.h5')
-    coins = ['BTC', 'ETH', 'BNB', 'LTC', 'AAVE', 'ADA', 'ATOM', 'BCH',  'BTT', 'CAKE', 'DOGE',
-       'DOT', 'EOS', 'ETC', 'FIL', 'FTT', 'LINK', 'LUNA', 'MKR',
-       'NEO', 'SOL', 'THETA', 'TRX', 'UNI', 'USDT', 'VET', 'XLM', 'XMR', 'XRP',
-       'XTZ'],
+    coins =  ['BTC', 'ETH', 'BNB', 'LTC' , 'AAVE' , 'ADA'] # , 'ATOM', 'BCH',  'BTT', 'CAKE', 'DOGE',
+       #'DOT', 'EOS', 'ETC', 'FIL', 'FTT', 'LINK', 'LUNA', 'MKR',
+       #'NEO', 'SOL', 'THETA', 'TRX', 'UNI', 'USDT', 'VET', 'XLM', 'XMR', 'XRP',
+       #'XTZ']
     env = create_env_with_price_series(
         config=config,
         price_stream = [

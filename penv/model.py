@@ -45,7 +45,7 @@ class ReallocationModel(TorchModelV2, nn.Module):
     def __init__(self, obs_space, action_space, num_outputs, model_config, name, **kwargs):
         nn.Module.__init__(self)
         super().__init__(obs_space, action_space, None, model_config, name)
-
+        print(obs_space, action_space)
         m = model_config["custom_model_config"]["num_assets"]
 
         self.trunk = nn.Sequential(
